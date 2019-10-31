@@ -1,11 +1,12 @@
 package io.prometheus.client;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
-import org.junit.Before;
+
+import static org.junit.Assert.assertEquals;
 
 
 public class CounterTest {
@@ -38,9 +39,9 @@ public class CounterTest {
     assertEquals(8.0, getValue(), .001);
     assertEquals(8.0, noLabels.get(), .001);
   }
-    
-  @Test(expected=IllegalArgumentException.class)
-  public void testNegativeIncrementFails() {
+
+  @Test
+  public void testNegativeIncrementSucceeds() {
     noLabels.inc(-1);
   }
   

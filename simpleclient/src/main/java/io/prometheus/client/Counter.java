@@ -116,11 +116,10 @@ public class Counter extends SimpleCollector<Counter.Child> implements Collector
     }
     /**
      * Increment the counter by the given amount.
-     * @throws IllegalArgumentException If amt is negative.
      */
     public void inc(double amt) {
       if (amt < 0) {
-        throw new IllegalArgumentException("Amount to increment must be non-negative.");
+        return; // ignore negative measurements
       }
       value.add(amt);
     }
@@ -141,7 +140,6 @@ public class Counter extends SimpleCollector<Counter.Child> implements Collector
   }
   /**
    * Increment the counter with no labels by the given amount.
-   * @throws IllegalArgumentException If amt is negative.
    */
   public void inc(double amt) {
     noLabelsChild.inc(amt);

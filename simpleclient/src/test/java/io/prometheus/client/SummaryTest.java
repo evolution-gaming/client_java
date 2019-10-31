@@ -131,12 +131,12 @@ public class SummaryTest {
     assertEquals(0.99 * nSamples, getLabelsQuantile(0.99), error * nSamples);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testObserveNegative() {
     noLabels.observe(-2.0);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testObserveNegativeQuantiles() {
     noLabelsAndQuantiles.observe(-2.0);
   }

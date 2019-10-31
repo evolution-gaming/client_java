@@ -4,6 +4,8 @@ import java.io.Closeable;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Summary metric using HdrHistogram, to track the size of events.
@@ -271,19 +273,22 @@ public class Summary extends SimpleCollector<Summary.Child> implements Counter.D
 
     /**
      * Observe the given amount.
-     *
-     * @throws IllegalArgumentException If amt is negative.
      */
     public void observe(double amt) {
       if (amt < 0.0) {
-        // See DoubleHistogram#autoAdjustRangeForValueSlowPath
-        throw new IllegalArgumentException("Value " + amt + " invalid: Negative values are not supported by HdrHistogram.");
+        return; // ignore negative measurements
       }
 
       count.add(1);
       sum.add(amt);
       if (quantileValues != null) {
-        quantileValues.insert(amt);
+        try {
+          quantileValues.insert(amt);
+        } catch (Exception e) {
+          // handle possible rare exceptions from HdrHistogram
+          Logger.getLogger(Summary.class.getName())
+              .log(Level.WARNING, "Failed to record value: " + amt, e);
+        }
       }
     }
 
@@ -345,8 +350,6 @@ public class Summary extends SimpleCollector<Summary.Child> implements Counter.D
 
   /**
    * Observe the given amount on the summary with no labels.
-   *
-   * @throws IllegalArgumentException If amt is negative.
    */
   public void observe(double amt) {
     noLabelsChild.observe(amt);
